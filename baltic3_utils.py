@@ -5,8 +5,7 @@ import datetime as dt
 
 import baltic3 as bt
 
-"""A  bunch of functions which I wrote to support baltic3.py,
-because that library is getting too big.
+"""A  bunch of functions which I wrote to support baltic3.py.
 """
 
 def unique(o, idfun=repr):
@@ -49,7 +48,7 @@ def postorder_traverse(node):
             return node.parent
 
 
-def saltdal_read_tree(tree_path, sort_descending=True):
+def read_tree_string(tree_path, sort_descending=True):
     """A simple tree reading function which reads just a tree string. Wraps:
     1. make_tree()
     2. my_tree.sortBranches(). This step gives each node/tip (x, y) coords.
@@ -71,13 +70,11 @@ def saltdal_read_tree(tree_path, sort_descending=True):
 
     bt.make_tree(tree_string, my_tree)
 
-    # traverse tree; not sure if needed
-    #my_tree.treeStats()
+    # Computes node heights and lengths, and sets treeHeight
+    my_tree.traverse_tree()
     my_tree.sortBranches(descending=False)
 
     return my_tree
-
-
 
 
 def austechia_read_tree(tree_path, date_delim="_", make_tree_verbose=False):
