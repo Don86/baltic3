@@ -1,8 +1,9 @@
 # baltic3
 Python 3 version of Baltic: the Backronymed Adaptable Lightweight Tree Import Code. The original Python2 version is available over at the [Bedford Lab](https://github.com/blab/baltic). That `readme`'s worth a read to explain how the class structures are set up.
 
-* [Tutorial 1](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%201%20-%20Basics.ipynb) - Basics and simple plot (`ipynb`)
 * [Input formatting readme](https://github.com/Don86/baltic3/blob/master/examples/input_formatting.md)
+* [Tutorial 1](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%201%20-%20Basics.ipynb) - Basics and simple plot
+* [Tutorial 2](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%202%20-%20A%20Tree%20and%20Horizontal%20Bar%20Chart.ipynb) - A tree and a bar chart
 
 ## To Do/Dev Notes
 
