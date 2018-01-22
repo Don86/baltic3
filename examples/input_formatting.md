@@ -71,4 +71,4 @@ end;
 
 Produces a tree in Baltic tree like:
 
-<img src="./examples/wiki_tree.png" width="650">
+<img src="./wiki_tree.png" width="650">
