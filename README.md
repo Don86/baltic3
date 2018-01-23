@@ -4,6 +4,7 @@ Python 3 version of Baltic: the Backronymed Adaptable Lightweight Tree Import Co
 * [Input formatting readme](https://github.com/Don86/baltic3/blob/master/examples/input_formatting.md)
 * [Tutorial 1](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%201%20-%20Basics.ipynb) - Basics and simple plot
 * [Tutorial 2](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%202%20-%20A%20Tree%20and%20Horizontal%20Bar%20Chart.ipynb) - A tree and a bar chart
+* [Tutorial 3](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%203%20-%20Tree%20with%20Heatmap.ipynb) - Tree with heatmap
 
 ## To Do/Dev Notes
 
