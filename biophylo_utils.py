@@ -1,11 +1,12 @@
 import time
 import numpy as np
 import pandas as pd
+import itertools
 
 from Bio import Phylo
 
 """
-A bunch of commonly used utility functions related to Bio.Phylo. Not strictly
+A bunch of cookbook or wrapper functions related to Bio.Phylo. Not strictly
 related to baltic3, but I'm putting them here for git saving convenience.
 """
 
@@ -28,6 +29,39 @@ def tip_to_tip_distance(my_tree, tip1, tip2):
 
     tt_dist = t1_mrca_dist + t2_mrca_dist
     return tt_dist
+
+
+def genetic_distance_matrix(my_tree, names_ls):
+    """Returns an upper triangular similarity matrix of all pairwise branch
+    distances between possible pairs of tipnames in names_ls.
+
+    PARAMS
+    ------
+    my_tree: Bio.Phylo tree object
+    names_ls: list of str. List of tipnames to compute genetic distance with,
+    using branch lengths as a measure.
+
+    RETURNS
+    -------
+    hm_data: np array of shape (len(names_ls), len(names_ls)), type float.
+    """
+    all_pairs = list(itertools.combinations((names_ls), 2))
+    gd_ls = []
+    n_seq = len(names_ls)
+    for pair in all_pairs:
+        x, y = pair
+        gd = tip_to_tip_distance(my_tree, x, y)
+        gd_ls.append(gd)
+
+    # Construct heatmap data
+    hm_data = np.zeros((n_seq, n_seq))
+    idx = 0
+    for i in range(n_seq):
+        for j in range(i+1, n_seq):
+            hm_data[i][j] = gd_ls[idx]
+            idx += 1
+
+    return hm_data
 
 
 def get_clade_labels(my_tree, ref_names_ls, verbose=True):

@@ -1,4 +1,8 @@
-# baltic3
+# DEPRECATED(?)
+
+I'll keep watch on the original `baltic` repo, which is being migrated over to python3 anyway.
+
+## baltic3
 Python 3 version of Baltic: the Backronymed Adaptable Lightweight Tree Import Code. The original Python2 version is available over at the [Bedford Lab](https://github.com/blab/baltic). That `readme`'s worth a read to explain how the class structures are set up.
 
 * [Input formatting readme](https://github.com/Don86/baltic3/blob/master/examples/input_formatting.md)
