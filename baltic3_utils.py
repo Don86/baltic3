@@ -5,13 +5,10 @@ import datetime as dt
 
 import baltic3 as bt
 
-"""A  bunch of functions which I wrote to support baltic3.py.
+"""A bunch of functions which I wrote to support my own baltic3.py.
 """
 
-def unique(o, idfun=repr):
-    """Reduce a list down to its unique elements."""
-    seen = {}
-    return [seen.setdefault(idfun(e),e) for e in o if idfun(e) not in seen]
+
 
 
 def preorder_traverse(node, preorder_ls, verbose=True):
@@ -48,13 +45,19 @@ def postorder_traverse(node):
             return node.parent
 
 
-def read_tree_string(tree_path, sort_descending=True):
+def read_tree(tree_path, sort_descending=True):
     """A simple tree reading function which reads just a tree string. Wraps:
     1. make_tree()
     2. my_tree.sortBranches(). This step gives each node/tip (x, y) coords.
+    3. Extract tip names using leaf.index, searching until it encounters a ":"
 
-    Doesn't need tip dates, but as a result, will not populate absoluteTime
+    Notes
+    -----
+    * Doesn't need tip dates, but as a result, will not populate absoluteTime
     attributes either.
+    * Can't read treesub trees. Error in Gytis' original make_tree()
+    logic; I'm guessing this is something to do with being unable to read newick
+    strings with named nodes/branches.
 
     Params
     ------
@@ -73,6 +76,12 @@ def read_tree_string(tree_path, sort_descending=True):
     # Computes node heights and lengths, and sets treeHeight
     my_tree.traverse_tree()
     my_tree.sortBranches(descending=False)
+
+    # Get tipnames straight from the tree string
+    leaf_index_ls = [k.index for k in my_tree.leaves]
+    leaf_name_dict = {} # leaf.index : leaf.name
+    for idx in leaf_index_ls:
+
 
     return my_tree
 
@@ -173,3 +182,9 @@ def isfloat(value):
         return True
     except ValueError:
         return False
+
+
+#def unique(o, idfun=repr):
+#    """Reduce a list down to its unique elements."""
+#    seen = {}
+#    return [seen.setdefault(idfun(e),e) for e in o if idfun(e) not in seen]
