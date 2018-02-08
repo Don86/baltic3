@@ -1,14 +1,128 @@
+import matplotlib.pyplot as plt
+
 import re
 import copy
 import math
+import numpy as np
+import pandas as pd
 import datetime as dt
 
 import baltic3 as bt
 
 """A bunch of functions which I wrote to support my own baltic3.py.
 """
+def treesub_to_bt(fn_in, fn_out, verbose=True):
+    """Reads raw treesub output, which is assumed to be in nexus format, does a
+    bunch of necessary wrangling, then returns a format that can be read by
+    austechia_read_tree(). Still requires a tree with dates, delimited by '_'.
+
+    Params
+    ------
+    fn_in: string; treesub output, like "substitutions.tree"
+    fn_out: filename to write the modified nexus format out to.
+
+    Returns
+    -------
+    dm: dataframe of node_num (originally "NUMBER") and the associated non-syn
+    subs.
+    """
+    # Assumes that raw treesub output is in nexus format
+    # read treestring
+    with open("subs.tre") as f:
+        contents = f.readlines()
+    contents = [x.strip() for x in contents]
+
+    # Get the row which contains just the newick string
+    for i in range(len(contents)):
+        if contents[i] == "begin trees;":
+            tree_string = contents[i+1]
+
+    # Remove all spaces, and a bit of nexus formatting in front
+    tree_string = tree_string.replace(" ", "")
+    tree_string = tree_string.replace("treetree_1=[&R]", "")
+
+    # =============== Extract stuff ===============
+    # Get tip names
+    tip_names_ls = []
+    tip_name_start = 0
+    for i in range(len(contents)):
+        # switch on
+        if contents[i] == "taxlabels":
+            tip_name_start = 1
+        # switch off
+        if (contents[i] == ";") and (contents[i+1] == "end;") and (tip_name_start == 1):
+            tip_name_start = 0
+
+        if (tip_name_start == 1) and (contents[i] != "taxlabels"):
+            pattern = re.compile(r"([\s\S]*?)\[&")
+            tipname = re.findall(pattern, contents[i])[0]
+            tip_names_ls.append(tipname)
+
+    # Retrieve all treesub node_strings, "[&REALNAME=...]", from tree_string
+    pattern = re.compile(r'\[&([\s\S]*?)\]:')
+    node_strings_ls = re.findall(pattern, tree_string)
+
+    # Replace the full treesub nodestring with just "NUMBER"
+    # Keep a dictionary
+    for node_string in node_strings_ls:
+        # retrieve "NUMBER"
+        pattern = re.compile(r'NUMBER="([\d]*?)",')
+        node_num = re.findall(pattern, node_string)[0]
+        tree_string = tree_string.replace(node_string, node_num)
+
+    # Extract all the individual bits of node_strings
+    contents = []
+    for node_string in node_strings_ls:
+        pattern = re.compile(r'NUMBER="([\d]*?)",')
+        node_num = re.findall(pattern, node_string)[0]
+
+        pattern = re.compile(r'NONSYNSUBS="([\s\S]*?)",')
+        nssubs_ls = re.findall(pattern, node_string)
+        nssubs = "*"
+        if len(nssubs_ls) > 0:
+            nssubs = nssubs_ls[0]
+            for char in ["[", "]"]:
+                nssubs = nssubs.replace(char, "")
+        contents.append([node_num, nssubs])
+
+    dm = pd.DataFrame(data=contents, columns=["node_num", "nonsynsubs"])
 
 
+    # =============== Prep contents to write out a full nexus file ===============
+    contents = ["#NEXUS"]
+    for ln in ["begin taxa;", "dimensions ntax="+str(len(tip_names_ls))+";", "taxlabels"]:
+        contents.append(ln)
+
+    # add taxlabels
+    for ln in tip_names_ls:
+        contents.append(ln)
+
+    contents.append(";")
+    contents.append("end;")
+
+    # add tree block
+    tree_block_idx = len(contents)
+    contents.append("begin trees;")
+    contents.append("tree TREE1 = [&R] "+tree_string)
+    contents.append("end;")
+
+    with open(fn_out, "w") as f:
+        for line in contents:
+            f.write("%s\n" % line)
+
+    # preview contents
+    if verbose:
+        preview_counter = 10
+        for i in range(preview_counter):
+            print(contents[i])
+        print("...")
+        print(contents[tree_block_idx])
+        print(contents[tree_block_idx+1][:50]+"...")
+        print(contents[tree_block_idx+2])
+        print("")
+        print("Written out to file %s" % fn_out)
+
+    return dm
 
 
 def preorder_traverse(node, preorder_ls, verbose=True):
@@ -45,6 +159,42 @@ def postorder_traverse(node):
             return node.parent
 
 
+def quickdraw(my_tree, fig, ax, branch_width=0.5, tip_size=3):
+    """Draws the tree, duh. Still doesn't work, though. KIV.
+    """
+    lines_ls = []
+    # ==================== Tree ====================
+    for k in my_tree.Objects:
+        c = 'k'
+        x=k.height # raw (x, y) coords
+        y=k.y
+
+        xp = k.parent.height
+        if x is None: # matplotlib won't plot Nones, like root
+            x = 0
+        if xp==None:
+            xp = x
+
+        if isinstance(k,bt.leaf) or k.branchType=='leaf':
+            #print(k.height)
+            ax.scatter(x,y,s=tip_size,facecolor=c,edgecolor='none',zorder=11)
+            ax.scatter(x,y,s=tip_size+0.8*tip_size,facecolor='k',edgecolor='none',zorder=10)
+
+        elif isinstance(k,bt.node) or k.branchType=='node':
+            #line = np.array([[x, k.children[0].y], [x, k.children[-1].y]])
+            ax.plot([x, x], [k.children[0].y, k.children[-1].y], color="k", lw=branch_width)
+            #lines_ls.append(line)
+
+        #line = np.array([[xp, y], [x, y]])
+        ax.plot([xp, x], [y, y], color="k", lw=branch_width)
+        #lines_ls.append(line)
+
+    #ax.add_collection(LineCollection(lines_ls, lw=branch_width,color='k', zorder=10))
+
+    #plt.tight_layout()
+    #plt.show()
+
+
 def read_tree(tree_path, sort_descending=True):
     """A simple tree reading function which reads just a tree string. Wraps:
     1. make_tree()
@@ -58,6 +208,8 @@ def read_tree(tree_path, sort_descending=True):
     * Can't read treesub trees. Error in Gytis' original make_tree()
     logic; I'm guessing this is something to do with being unable to read newick
     strings with named nodes/branches.
+    * Can read FastTree trees
+    * Not able to sort tree branches; can only read the newick string exactly.
 
     Params
     ------
@@ -80,8 +232,22 @@ def read_tree(tree_path, sort_descending=True):
     # Get tipnames straight from the tree string
     leaf_index_ls = [k.index for k in my_tree.leaves]
     leaf_name_dict = {} # leaf.index : leaf.name
-    for idx in leaf_index_ls:
+    tipname = ""
+    window = tree_string
+    for i in range(len(leaf_index_ls)):
+        idx0 = leaf_index_ls[i]
+        idx = leaf_index_ls[i]
+        tipname = ""
+        window = tree_string[idx]
+        while window != ":":
+            window = tree_string[idx]
+            idx +=1
+            tipname = tipname + window
+        leaf_name_dict[idx0] = tipname[:-1]
 
+    # Write name attribute of the original leaf objects
+    for k in my_tree.leaves:
+        k.name = leaf_name_dict[k.index]
 
     return my_tree
 
