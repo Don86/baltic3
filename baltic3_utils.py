@@ -11,6 +11,8 @@ import baltic3 as bt
 
 """A bunch of functions which I wrote to support my own baltic3.py.
 """
+
+
 def treesub_to_bt(fn_in, fn_out, verbose=True):
     """Reads raw treesub output, which is assumed to be in nexus format, does a
     bunch of necessary wrangling, then returns a format that can be read by
@@ -25,10 +27,17 @@ def treesub_to_bt(fn_in, fn_out, verbose=True):
     -------
     dm: dataframe of node_num (originally "NUMBER") and the associated non-syn
     subs.
+
+    More Notes
+    ----------
+     * I may have overdone the "raw treesub output" bit; this function can't
+     read trees rerooted in figtree (but I haven't tried very hard either).
+     Treesub must be rerun with a new root.
+     
     """
     # Assumes that raw treesub output is in nexus format
     # read treestring
-    with open("subs.tre") as f:
+    with open(fn_in) as f:
         contents = f.readlines()
     contents = [x.strip() for x in contents]
 
@@ -66,14 +75,20 @@ def treesub_to_bt(fn_in, fn_out, verbose=True):
     # Keep a dictionary
     for node_string in node_strings_ls:
         # retrieve "NUMBER"
-        pattern = re.compile(r'NUMBER="([\d]*?)",')
-        node_num = re.findall(pattern, node_string)[0]
+        pattern = re.compile(r'NUMBER="[\d]*?"')
+        node_num_ls = re.findall(pattern, node_string)
+        node_num = ""
+        if len(node_num_ls) > 0:
+            node_num = node_num_ls[0]
+        else:
+            print("WARNING: NUMBER not found for node_string %s" % node_string)
         tree_string = tree_string.replace(node_string, node_num)
 
     # Extract all the individual bits of node_strings
     contents = []
     for node_string in node_strings_ls:
-        pattern = re.compile(r'NUMBER="([\d]*?)",')
+        #old NUMBER regex: r'NUMBER="([\d]*?)",'
+        pattern = re.compile(r'NUMBER="[\d]*?"')
         node_num = re.findall(pattern, node_string)[0]
 
         pattern = re.compile(r'NONSYNSUBS="([\s\S]*?)",')
@@ -86,7 +101,9 @@ def treesub_to_bt(fn_in, fn_out, verbose=True):
         contents.append([node_num, nssubs])
 
     dm = pd.DataFrame(data=contents, columns=["node_num", "nonsynsubs"])
-
+    # some formatting
+    dm["node_num"] = dm.apply(lambda row: str(row["node_num"]).replace('NUMBER="', ""), axis=1)
+    dm["node_num"] = dm.apply(lambda row: str(row["node_num"]).replace('"', ""), axis=1)
 
     # =============== Prep contents to write out a full nexus file ===============
     contents = ["#NEXUS"]
