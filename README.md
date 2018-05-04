@@ -25,3 +25,10 @@ he hasn't fixed a None-type comparison error yet (comparing `float >= None`, no 
  - Find a way to accept just a tree string, without dates. IIRC when it currently can accept a tree string, but the resulting tree object won't have tip names, or something like that. Not sure if the tip/node attributes will be properly read as well (e.g. bootstrap values). Does `btu.read_tree()` work?
  - Find a way to allocate node identifiers of some kind, in either of the 3 tree-traversal methods.
  - Perform tip-to-mrca-to-tip computations. Problem is: can't identify the MRCA of two given tips, because the nodes don't have a unique identifier. These computations are currently done in `Bio.Phylo`; but calling to an external library seems inelegant.
+
+Porting over to Biopython
+
+* Only one missing function: allocating (x, y) coords to each node.
+* `Biopython` loads trees faster. `baltic` can take several minutes for a large tree (thousands of tips)
+* `baltic` is too fussy about the tree input format (has to look like a BEAST tree)
+* `baltic` can't handle asterisks, because it parses the newick string with regex, where '\*' is a wildcard character.
