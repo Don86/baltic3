@@ -5,16 +5,7 @@ The main libraries are:
 
 * `baltic3` - contains the `tree`, `node` and `leaf` class definitions, and class methods.
 * `baltic3_utils` - function library that contains public methods.
-* `experimental` - function library that contains new methods which are still under development. 
-
----
-
-### Examples
-
-* [Input formatting readme](https://github.com/Don86/baltic3/blob/master/examples/input_formatting.md)
-* [Tutorial 1](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%201%20-%20Basics.ipynb) - Basics and simple plot
-* [Tutorial 2](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%202%20-%20A%20Tree%20and%20Horizontal%20Bar%20Chart.ipynb) - A tree and a bar chart
-* [Tutorial 3](https://github.com/Don86/baltic3/blob/master/examples/Tutorial%203%20-%20Tree%20with%20Heatmap.ipynb) - Tree with heatmap
+* `experimental` - function library that contains new methods which are still under development.
 
 ---
 ### To Do/Dev Notes
