@@ -74,7 +74,7 @@ end;
 
 Produces a tree in Baltic tree like:
 
-![Image of Wikitree](https://github.com/Don86/baltic3/assets/wiki_tree.png)
+![Image of Wikitree](https://github.com/Don86/baltic3/blob/master/assets/wiki_tree.png)
 
 ---
 # To Do/Dev Notes
