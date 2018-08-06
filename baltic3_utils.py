@@ -328,6 +328,73 @@ def austechia_read_tree(tree_path, date_delim="_", make_tree_verbose=False):
     return ll
 
 
+def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%d',treestring_regex='tree [A-Za-z\_]+([0-9]+)',variableDate=True,absoluteTime=True,verbose=False):
+    """Gytis' original tree-reading function. Copy-pasted; untested!
+    """
+    tipFlag=False
+    tips={}
+    tipNum=0
+    ll=None
+    if isinstance(tree_path,str):
+        handle=open(tree_path,'r')
+    else:
+        handle=tree_path
+
+    for line in handle:
+        l=line.strip('\n')
+
+        cerberus=re.search('dimensions ntax=([0-9]+);',l.lower())
+        if cerberus is not None:
+            tipNum=int(cerberus.group(1))
+            if verbose==True:
+                print('File should contain %d taxa'%(tipNum))
+
+        cerberus=re.search(treestring_regex,l)
+        if cerberus is not None:
+            treeString_start=l.index('(')
+            ll=bt.tree() ## new instance of tree
+            bt.make_tree(l[treeString_start:],ll) ## send tree string to make_tree function
+            if verbose==True:
+                print('Identified tree string')
+
+        if tipFlag==True:
+            cerberus=re.search('([0-9]+) ([A-Za-z\-\_\/\.\'0-9 \|?]+)',l)
+            if cerberus is not None:
+                tips[cerberus.group(1)]=cerberus.group(2).strip('"').strip("'")
+                if verbose==True:
+                    print('Identified tip translation %s: %s'%(cerberus.group(1),tips[cerberus.group(1)]))
+            elif ';' not in l:
+                print('tip not captured by regex:',l.replace('\t',''))
+
+        if 'translate' in l.lower():
+            tipFlag=True
+        if ';' in l:
+            tipFlag=False
+
+    assert ll,'Regular expression failed to find tree string'
+    ll.traverse_tree() ## traverse tree
+    ll.sortBranches() ## traverses tree, sorts branches, draws tree
+    if len(tips)>0:
+        ll.renameTips(tips) ## renames tips from numbers to actual names
+        ll.tipMap=tips
+    if absoluteTime==True:
+        tipDates=[]
+        for k in ll.leaves:
+            if len(tips)>0:
+                n=k.name
+            else:
+                n=k.numName
+
+            cerberus=re.search(tip_regex,n)
+            if cerberus is not None:
+                tipDates.append(decimalDate(cerberus.group(1),fmt=date_fmt,variable=variableDate))
+
+        highestTip=max(tipDates)
+        ll.setAbsoluteTime(highestTip)
+
+    return ll
+
+
 def decimalDate(date,fmt="%Y-%m-%d",variable=False,dateSplitter='-'):
     """ Converts calendar dates in specified format to decimal date.
 
