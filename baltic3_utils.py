@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+
 
 import re
 import copy
@@ -11,6 +13,168 @@ import baltic3 as bt
 
 """A bunch of functions which I wrote to support my own baltic3.py.
 """
+
+def quick_draw_tree(tree, 
+                    dm = None,
+                    query_colname = None,
+                    target_colname = None,
+                    c_dict = {},
+                    fig_h = 12,
+                    fig_w = 9,
+                    branch_width=0.5, 
+                    branch_colour="black",
+                    tip_shape_size=8, 
+                    x_offset=0, 
+                    save_fn = "",
+                    verbose=True,
+                    show_borders=False):
+    """
+    Draws a tree, and colours a set of tips based on an (optional) input dataframe, dm, with a column of interest, `colname`. 
+    
+    Params
+    ------
+    tree: input baltic tree.
+    dm: pandas dataframe; optional metadata dataframe.
+    query_colname: string; tipname in dm.
+    target_colname: string; column name of interest in dm. 
+    c_dict: dictionary; colour dictionary. 
+    fig_h: float; figure height.
+    fig_w: float; figure width.
+    branch_width: float; branch width (line weight).
+    branch_colour: str; branch colour. Default black. 
+    tip_shape_size: float; tip shape size.
+    x_offset: float; x_offset. The root is placed at x=0 by default. 
+    save_fn: str; output filename. Does not save if left blank.
+    verbose: Boolean; verbosity param
+    show_borders: Boolean; if true, show axes and border elements. 
+
+    Returns
+    -------
+    Tree plot on the active notebook. 
+    """
+    
+    # ==================== Input verification checks ====================
+    # Check input metadata df
+    try:
+        d_t = dm[target_colname]
+    except ValueError:
+        print("Column name %s not in dataframe!" % target_colname)
+
+    # Check colour dictionary
+    col_values_ls = list(set(dm[target_colname]))
+    if c_dict != {}:
+        for k in list(c_dict.keys()):
+            if k not in col_values_ls:
+                print("WARNING: colour dictionary key %s not found in input dataframe!" % k)
+        
+    # ==================== Plot! ====================
+    
+    fig,ax = plt.subplots(figsize=(fig_w, fig_h),facecolor='w')
+
+    for k in tree.Objects:
+        x=k.height
+        y=k.y
+
+        xp = k.parent.height
+        if x is None:
+            x = x_offset
+        if xp==None:
+            xp = x + x_offset
+
+        if isinstance(k,bt.leaf) or k.branchType=='leaf':
+            if c_dict != {}:
+                d_t = dm.loc[dm[query_colname]==k.name]
+                if len(d_t) != 1:
+                    print("WARNING: %s rows found for tipname %s!" % (len(d_t), k.name))
+                elif len(d_t) == 1:
+                    country = list(d_t[target_colname])[0]
+                    if country in list(c_dict.keys()):
+                        ax.scatter(x, y, facecolor=c_dict[country], 
+                                   edgecolor='none',
+                                   s=tip_shape_size, 
+                                   zorder=10)
+                        # following Gytis' art style: plot black circles underneath
+                        ax.scatter(x,y,s=tip_shape_size+0.8*tip_shape_size,
+                                   facecolor='k',
+                                   edgecolor='none',
+                                   zorder=9)
+            else:
+                pass
+
+        elif isinstance(k,bt.node) or k.branchType=='node':
+            ax.plot([x,x],
+                    [k.children[-1].y,k.children[0].y],
+                    lw=branch_width,
+                    color=branch_colour,ls='-',zorder=9)
+
+        # Draw horizontal lines
+        ax.plot([xp,x],[y,y],lw=branch_width,color=branch_colour,ls='-',zorder=9)
+
+    # ==================== Figure Legend ====================
+    if c_dict != {}:
+        labels = [] # for ax.legend()
+        for c in list(c_dict.keys()):
+            labels.append(mpatches.Patch(color=c_dict[c], label=c))
+
+    ax.legend(handles=labels)
+    
+    # scale bar
+    scalebar_y = -tree.ySpan*0.05
+    ax.plot([0, 0.01], [scalebar_y, scalebar_y], c="k", lw=branch_width*2)
+    ax.text(0.005, -tree.ySpan*0.045, "0.01", 
+            verticalalignment="bottom", 
+            horizontalalignment="center")
+    
+    # ==================== remove tick marks and borders ====================
+    #if "show_borders"==False:
+    ax.set_yticks([])
+    ax.set_xticks([])
+    plt.axis('off')
+    #plt.tight_layout()    
+
+    # Save the figure to a pdf. 
+    if save_fn != "":
+        plt.savefig(save_fn, bbox_inches="tight")
+
+    plt.show()
+
+
+def assign_inode_traits(tree, trait_name):
+    """
+    Iterate over all internal nodes, assigning traits to each inode based on their leaves.
+    If all leaves of that node have the same trait, then that inode will have that trait.
+    Otherwise, that node will be assigned 'undef'. Helpful in colouring the branches of monophyletic clades:
+    branch colours are inherited from the trait colour assignment of each parent node. 
+    This code is actually pretty inefficient, because the same node.leaves operation is called for _all_
+    inodes. 
+    
+    Params
+    ------
+    tree: Baltic tree with some trait of interest assigned to all leaves.
+    trait_name: str; trait name to look up in each leaf.traits dictionary. Will be assigned as a key in each node.traits
+    dictionary.
+
+    Returns
+    –------
+    tre2: Baltic tree with nodes assigned with traits. 
+    """
+
+    inodes_ls = tree.nodes
+
+    inode_trait = "undef" # init
+    for nd in inodes_ls:
+        leaves_ls_temp = nd.leaves # Leaves of the current node
+        lf_traits_ls = []
+        for lf in nd.leaves:
+            lf_traits_ls.append(lf.traits[trait_name])
+
+        if len(np.unique(lf_traits_ls)) == 1:
+            node_trait = np.unique(lf_traits_ls)[0]
+        
+        # write nd.traits in-place, which I hate.
+        nd.traits[trait_name] = node_trait
+
+    return tree
 
 
 def treesub_to_bt(fn_in, fn_out, verbose=True):
