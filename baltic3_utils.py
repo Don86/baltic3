@@ -14,10 +14,81 @@ import baltic3 as bt
 """A bunch of functions which I wrote to support my own baltic3.py.
 """
 
+def assign_leaf_trait(tree, dm, query_colname, target_colname, trait_name=""):
+    """
+    Assigns the values of target_colname to each leaf trait dictionary in the input tree.
+
+    Params
+    ------
+    tree: input Baltic tree
+    dm: pandas dataframe
+    query_colname: str; the column name from which to look up each leaf name.
+    target_colname: str; the column name of the trait of interest.
+    trait_name: str; the name of the dictionary key. If left blank (default), will inherit the value of `target_colname`.
+
+    Returns
+    -------
+    tree: tree with leaf traits assigned in-place.
+    """
+    if trait_name == "":
+        trait_name = target_colname
+
+    trait_val = "undef"
+    for lf in tree.leaves:
+        d_t = dm.loc[dm[query_colname]==lf.name]
+        if len(d_t) != 1:
+            print("WARNING: %s records found in dataframe for leaf name %s! Will assign 'undef'." % (len(d_t), lf.name))
+        elif len(d_t) == 1:
+            trait_val = list(d_t[target_colname])[0]
+        lf.traits[trait_name] = trait_val
+
+    return tree
+
+
+def brew_colour_dictionary(my_list, scheme="qualitative", style="paired"):
+    """Create a colour dictionary based on colorbrew presets.
+    
+    Params
+    ------
+    my_list: a list of values that will be assigned one colour each.
+    scheme: str; sequential, diverging or qualitative. Dummy input that does nothing (yet).
+    style: str; only 'paired' and 'set1' from 'qualitative' scheme available. 
+    """
+    cbrew_full_dict = {"paired":["#a6cee3", "#1f78b4", "#b2df8a",
+                                 "#33a02c",
+                                 "#fb9a99",
+                                 "#e31a1c",
+                                 "#fdbf6f",
+                                 "#ff7f00",
+                                 "#cab2d6",
+                                 "#6a3d9a",
+                                 "#ffff99",
+                                 "#b15928"],
+                       "set1":["#e41a1c", "#377eb8", "#4daf4a", 
+                               "#984ea3", #purple
+                               "#ff7f00", #orange
+                               "#ffff33", #yellow
+                               "#a65628", #brown
+                               "#f781bf", #pink
+                               "#999999"] #grey
+                      }
+    
+    full_colour_list = cbrew_full_dict[style]
+    cdict = {}
+    try:
+        for idx, val in enumerate(my_list):
+            cdict[val] = full_colour_list[idx]
+            
+    except IndexError:
+        print("Too many elements in input list to map the colour style to!")
+        cdict = {}
+        
+    return cdict
+
+
+
 def quick_draw_tree(tree, 
-                    dm = None,
-                    query_colname = None,
-                    target_colname = None,
+                    colour_by = "",
                     c_dict = {},
                     fig_h = 12,
                     fig_w = 9,
@@ -35,8 +106,7 @@ def quick_draw_tree(tree,
     ------
     tree: input baltic tree.
     dm: pandas dataframe; optional metadata dataframe.
-    query_colname: string; tipname in dm.
-    target_colname: string; column name of interest in dm. 
+    colour_by: str; trait key name to colour the tips by.
     c_dict: dictionary; colour dictionary. 
     fig_h: float; figure height.
     fig_w: float; figure width.
@@ -52,22 +122,7 @@ def quick_draw_tree(tree,
     -------
     Tree plot on the active notebook. 
     """
-    
-    # ==================== Input verification checks ====================
-    # Check input metadata df
-    try:
-        d_t = dm[target_colname]
-    except ValueError:
-        print("Column name %s not in dataframe!" % target_colname)
-
-    # Check colour dictionary
-    col_values_ls = list(set(dm[target_colname]))
-    if c_dict != {}:
-        for k in list(c_dict.keys()):
-            if k not in col_values_ls:
-                print("WARNING: colour dictionary key %s not found in input dataframe!" % k)
         
-    # ==================== Plot! ====================
     
     fig,ax = plt.subplots(figsize=(fig_w, fig_h),facecolor='w')
 
@@ -82,22 +137,18 @@ def quick_draw_tree(tree,
             xp = x + x_offset
 
         if isinstance(k,bt.leaf) or k.branchType=='leaf':
-            if c_dict != {}:
-                d_t = dm.loc[dm[query_colname]==k.name]
-                if len(d_t) != 1:
-                    print("WARNING: %s rows found for tipname %s!" % (len(d_t), k.name))
-                elif len(d_t) == 1:
-                    country = list(d_t[target_colname])[0]
-                    if country in list(c_dict.keys()):
-                        ax.scatter(x, y, facecolor=c_dict[country], 
-                                   edgecolor='none',
-                                   s=tip_shape_size, 
-                                   zorder=10)
-                        # following Gytis' art style: plot black circles underneath
-                        ax.scatter(x,y,s=tip_shape_size+0.8*tip_shape_size,
-                                   facecolor='k',
-                                   edgecolor='none',
-                                   zorder=9)
+            if (c_dict != {}) and (colour_by != ""):
+                # colour only those tips identified in c_dict
+                if k.traits[colour_by] in list(c_dict.keys()):
+                    ax.scatter(x, y, facecolor=c_dict[k.traits[colour_by]], 
+                               edgecolor='none',
+                               s=tip_shape_size, 
+                               zorder=10)
+                    # following Gytis' art style: plot black circles underneath
+                    ax.scatter(x,y,s=tip_shape_size+0.8*tip_shape_size,
+                               facecolor='k',
+                               edgecolor='none',
+                               zorder=9)
             else:
                 pass
 
