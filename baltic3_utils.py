@@ -89,7 +89,7 @@ def brew_colour_dictionary(my_list, scheme="qualitative", style="paired"):
 
 def quick_draw_tree(tree, 
                     colour_by = "",
-                    c_dict = {},
+                    values_of_interest = [],
                     fig_h = 12,
                     fig_w = 9,
                     branch_width=0.5, 
@@ -105,9 +105,9 @@ def quick_draw_tree(tree,
     Params
     ------
     tree: input baltic tree.
-    dm: pandas dataframe; optional metadata dataframe.
     colour_by: str; trait key name to colour the tips by.
-    c_dict: dictionary; colour dictionary. 
+    values_of_interest: list of str; the traits of interest. If left as an empty list, will grab all possible values
+    in the colour_by trait key value. WARNING: this could result in too many possible colour values to map. 
     fig_h: float; figure height.
     fig_w: float; figure width.
     branch_width: float; branch width (line weight).
@@ -122,8 +122,15 @@ def quick_draw_tree(tree,
     -------
     Tree plot on the active notebook. 
     """
+
+    # Get c_dict
+    if len(values_of_interest) > 0:
+        c_dict = brew_colour_dictionary(values_of_interest)
+    else:
+        all_trait_vals = [lf.traits[colour_by] for lf in tree.leaves]
+        c_dict = brew_colour_dictionary(all_trait_vals)
         
-    
+    # Plot!
     fig,ax = plt.subplots(figsize=(fig_w, fig_h),facecolor='w')
 
     for k in tree.Objects:
@@ -176,11 +183,11 @@ def quick_draw_tree(tree,
             verticalalignment="bottom", 
             horizontalalignment="center")
     
-    # ==================== remove tick marks and borders ====================
-    #if "show_borders"==False:
-    ax.set_yticks([])
-    ax.set_xticks([])
-    plt.axis('off')
+    # ==================== remove tick marks and borders ==================
+    if "show_borders"==False:
+        ax.set_yticks([])
+        ax.set_xticks([])
+        plt.axis('off')
     #plt.tight_layout()    
 
     # Save the figure to a pdf. 
