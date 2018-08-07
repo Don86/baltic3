@@ -106,8 +106,10 @@ def quick_draw_tree(tree,
     ------
     tree: input baltic tree.
     colour_by: str; trait key name to colour the tips by.
-    values_of_interest: list of str; the traits of interest. If left as an empty list, will grab all possible values
-    in the colour_by trait key value. WARNING: this could result in too many possible colour values to map. 
+    values_of_interest: list of str; a subset of all possible values of the trait of interest, e.g. only "human" and "avian" out of
+    all possible hosts in the dataset, or only "USA" and "China" out of all possible countries, etc. 
+    If left as an empty list, will grab all possible values in the colour_by trait key value. 
+    WARNING: The latter option could result in too many possible colour values to map. 
     fig_h: float; figure height.
     fig_w: float; figure width.
     branch_width: float; branch width (line weight).
