@@ -27,23 +27,7 @@ Begin taxa;
 End;
 ```
 
-Baltic names *must* have a date at the end, in the format `yyyy-mm-dd`, `yyyy-mm` or `yyyy`, delimited from the rest of the name by some special character, (e.g. "`_`" or "`|`"). Some examples of valid names:
-
-```
-A/virusname1/virus_id1_2015-05
-A/virusname1/virus_id1_2015-5-31
-A/virusname1/virus_id1_2015-05-31
-A/virusname1/virus_id1_2015-05-01
-A/virusname1/virus_id1_2015
-
-A/virusname1/virus_id1|2015-05
-A/virusname1/virus_id1|2015-5-31
-A/virusname1/virus_id1|2015-05-31
-A/virusname1/virus_id1|2015-05-01
-A/virusname1/virus_id1|2015
-```
-
-If there's no date to begin with, give the sequence name an arbitrary date. Because Baltic was originally designed for BEAST trees, it uses these dates to compute a decimal year (e.g. 2007-07-01 gets converted to 2007.5) and plots the node positions by decimal year, so that a time-scale can be shown on the x-axis as well. If the input tree is not a BEAST TREE, this is a dummy operation that does not affect the displayed tree topology.
+(Previously, the `austechia_read_tree()` function required tipnames to have dates appended to the end; that requirement has been removed.)
 
 ### "Trees" Block
 This is the block containing the actual tree itself, in Newick format.
