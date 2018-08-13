@@ -9,6 +9,66 @@ from Bio import Phylo
 A bunch of cookbook or wrapper functions related to Bio.Phylo. Not strictly
 related to baltic3, but I'm putting them here for git saving convenience.
 """
+def read_tree(tree_path, sort_descending=True):
+    """A simple tree reading function which reads just a tree string. Wraps:
+    1. make_tree()
+    2. my_tree.sortBranches(). This step gives each node/tip (x, y) coords.
+    3. Extract tip names using leaf.index, searching until it encounters a ":"
+    This works, but there are too many caveats for this to be more useful than
+    austechia_read_tree(). 
+
+    Caveats    
+    -------
+    * Doesn't need tip dates, but as a result, will not populate absoluteTime
+    attributes either.
+    * TESTED: Can read FastTree trees, treesub trees with node annotations. 
+    Can't quite manage BEAST trees. Generally, can't deal with trees where
+    the leaves have attributes.
+    * Not able to sort tree branches; can only read the newick string exactly.
+
+    Params
+    ------
+    tree_path: str; path to tree file.
+
+    Returns
+    -------
+    my_tree: baltic tree object.
+    """
+    my_tree = bt.tree() # init empty tree object
+    with open(tree_path) as f:
+        tree_string = f.read()
+
+    bt.make_tree(tree_string, my_tree)
+
+    # Computes node heights and lengths, and sets treeHeight
+    my_tree.traverse_tree()
+    if sort_descending:
+        my_tree.sortBranches(descending=False)
+    else:
+        my_tree.sortBranches(descending=True)
+
+    # Get tipnames straight from the tree string
+    leaf_index_ls = [k.index for k in my_tree.leaves]
+    leaf_name_dict = {} # leaf.index : leaf.name
+    tipname = ""
+    window = tree_string
+    for i in range(len(leaf_index_ls)):
+        idx0 = leaf_index_ls[i]
+        idx = leaf_index_ls[i]
+        tipname = ""
+        window = tree_string[idx]
+        while window != ":":
+            window = tree_string[idx]
+            idx +=1
+            tipname = tipname + window
+        leaf_name_dict[idx0] = tipname[:-1]
+
+    # Set name attribute of leaves
+    for k in my_tree.leaves:
+        k.name = leaf_name_dict[k.index]
+
+    return my_tree
+
 
 def tip_to_tip_distance(my_tree, tip1, tip2):
     """Computes the tip-to-mrca-to-tip distance between tip1 and tip2.
