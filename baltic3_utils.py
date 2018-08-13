@@ -105,11 +105,12 @@ def quick_draw_tree(tree,
     Params
     ------
     tree: input baltic tree.
-    colour_by: str; trait key name to colour the tips by.
+    colour_by: str; trait key name to colour the tips by. Can be left blank.
     values_of_interest: list of str; a subset of all possible values of the trait of interest, e.g. only "human" and "avian" out of
     all possible hosts in the dataset, or only "USA" and "China" out of all possible countries, etc. 
-    If left as an empty list, will grab all possible values in the colour_by trait key value. 
-    WARNING: The latter option could result in too many possible colour values to map. 
+    If `colour_by` is an empty string, this does nothing.
+    If left as an empty list, will grab all possible values in the `colour_by` trait key value. 
+    WARNING: The latter option may result in too many possible colour values to map. 
     fig_h: float; figure height.
     fig_w: float; figure width.
     branch_width: float; branch width (line weight).
@@ -125,14 +126,14 @@ def quick_draw_tree(tree,
     Tree plot on the active notebook. 
     """
 
-    # Get c_dict
+    # Init c_dict
     if len(values_of_interest) > 0:
         c_dict = brew_colour_dictionary(values_of_interest)
     else:
         all_trait_vals = [lf.traits[colour_by] for lf in tree.leaves]
         c_dict = brew_colour_dictionary(all_trait_vals)
         
-    # Plot!
+    # ========== Plot! ==========
     fig,ax = plt.subplots(figsize=(fig_w, fig_h),facecolor='w')
 
     for k in tree.Objects:
@@ -215,7 +216,7 @@ def assign_inode_traits(tree, trait_name):
     dictionary.
 
     Returns
-    –------
+    -------
     tre2: Baltic tree with nodes assigned with traits. 
     """
 
@@ -553,7 +554,7 @@ def austechia_read_tree(tree_path, date_delim="_", make_tree_verbose=False):
 
 
 def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%d',treestring_regex='tree [A-Za-z\_]+([0-9]+)',variableDate=True,absoluteTime=True,verbose=False):
-    """Gytis' original tree-reading function. Copy-pasted; untested!
+    """Gytis' original tree-reading function.
     """
     tipFlag=False
     tips={}
@@ -598,6 +599,8 @@ def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%
     assert ll,'Regular expression failed to find tree string'
     ll.traverse_tree() ## traverse tree
     ll.sortBranches() ## traverses tree, sorts branches, draws tree
+    if verbose:
+        print("len(tips)=%s" % len(tips))
     if len(tips)>0:
         ll.renameTips(tips) ## renames tips from numbers to actual names
         ll.tipMap=tips
