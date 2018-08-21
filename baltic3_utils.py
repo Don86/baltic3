@@ -130,7 +130,7 @@ def quick_draw_tree(tree,
     plt.show()
 
 
-def austechia_read_tree(tree_path, date_delim="_", make_tree_verbose=False):
+def austechia_read_tree(tree_path, date_bool=False, date_pos=-1, date_delim="_", make_tree_verbose=False):
     """Lifted from the austechia.ipynb. Best used for BEAST trees.
     THIS WORKS, DON'T TOUCH ANYTHING. 
     
@@ -138,6 +138,18 @@ def austechia_read_tree(tree_path, date_delim="_", make_tree_verbose=False):
     So now absoluteHeight attributes should be empty.
     Tested and working on: sample treesub output, sample mcc tree.
 
+    PARAMS
+    ------
+    tree_path: str; path to input free file.
+    date_bool: Bool; checks if dates are in the tipnames. If False, `date_pos` and `date_delimiter` input arguments will do nothing.
+    date_pos: int; index of the dates in tipnames, if available (specify with `date_bool`). Decimal or calendar date formats are both supported. 
+    Calendar dates must be in yyyy-mm-dd, yyyy-mm or yyyy format. 
+    date_delimiter: delimiter vale to read date off the tipname. 
+    make_tree_verbose: Bool; verbosity parameter.
+
+    RETURNS
+    -------
+    ll: baltic tree object. 
     """
     tipFlag=False
     tips={}
@@ -179,14 +191,17 @@ def austechia_read_tree(tree_path, date_delim="_", make_tree_verbose=False):
 
         # read the tip date. Accepts decimal or calendar dates;
         # converts to a decidate if required.
-    #    highestTip=max([decimalDate(x.name.strip("'").split(date_delim)[-1],variable=True) for x in ll.Objects if isinstance(x,bt.leaf)])
+        if date_bool:
+            highestTip=max([decimalDate(x.name.strip("'").split(date_delim)[date_pos],variable=True) for x in ll.Objects if isinstance(x,bt.leaf)])
     else: ## there's a tip name map at the beginning, so translate the names
         ll.renameTips(tips) ## give each tip a name
-    #    highestTip=max([decimalDate(x.strip("'").split(date_delim)[-1],variable=True) for x in tips.values()])
+        if date_bool:
+            highestTip=max([decimalDate(x.strip("'").split(date_delim)[date_pos],variable=True) for x in tips.values()])
 
     ll.treeStats()
     ll.sortBranches(descending=False)
-    #ll.setAbsoluteTime(highestTip)
+    if date_bool:
+        ll.setAbsoluteTime(highestTip)
     #print('Highest tip date: %.4f'%(highestTip))
 
     return ll
@@ -262,7 +277,10 @@ def loadNexus(tree_path,tip_regex='\|([0-9]+\-[0-9]+\-[0-9]+)',date_fmt='%Y-%m-%
 
 
 def treesub_to_bt(fn_in, fn_out, verbose=True):
-    """Reads raw treesub output, which is assumed to be in nexus format, does a
+    """
+    IMPT NOTE: dm output not working. Parse substitutions.tsv output directly instead
+    for the moment...
+    Reads raw treesub output, which is assumed to be in nexus format, does a
     bunch of necessary wrangling, then returns a format that can be read by
     austechia_read_tree(). Still requires a tree with dates, delimited by '_'.
 
@@ -281,7 +299,6 @@ def treesub_to_bt(fn_in, fn_out, verbose=True):
      * I may have overdone the "raw treesub output" bit; this function can't
      read trees rerooted in figtree (but I haven't tried very hard either).
      Treesub must be rerun with a new root.
-     
     """
     # Assumes that raw treesub output is in nexus format
     # read treestring
