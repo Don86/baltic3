@@ -11,7 +11,7 @@ import datetime as dt
 
 import baltic3 as bt
 
-"""A bunch of functions which I wrote to support my own baltic3.py.
+"""A bunch of functions which I wrote to support baltic3.py.
 """
 
 def get_leaf(tree, tipname):
@@ -31,7 +31,6 @@ def get_leaf(tree, tipname):
         if k.name == tipname:
             lf = k
     return lf
-
 
 
 def quick_draw_tree(tree, 
