@@ -14,6 +14,26 @@ import baltic3 as bt
 """A bunch of functions which I wrote to support my own baltic3.py.
 """
 
+def get_leaf(tree, tipname):
+    """Gets a leaf from `tree` by its tipname.
+
+    PARAMS
+    ------
+    tree: baltic tree object.
+    tipname: str; name of tip.
+
+    RETURNS
+    -------
+    lf: baltic leaf object with name `tipname`
+    """
+    lf = None
+    for k in tree.leaves:
+        if k.name == tipname:
+            lf = k
+    return lf
+
+
+
 def quick_draw_tree(tree, 
                     colour_by = "",
                     values_of_interest = [],
