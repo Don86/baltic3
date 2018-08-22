@@ -107,8 +107,8 @@ def quick_draw_tree(tree,
         for c in list(c_dict.keys()):
             labels.append(mpatches.Patch(color=c_dict[c], label=c))
 
-    	ax.legend(handles=labels)
-    
+    ax.legend(handles=labels)
+
     # scale bar
     scalebar_y = -tree.ySpan*0.05
     ax.plot([0, 0.01], [scalebar_y, scalebar_y], c="k", lw=branch_width*2)
