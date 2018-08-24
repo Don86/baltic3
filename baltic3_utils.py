@@ -7,9 +7,14 @@ import copy
 import math
 import numpy as np
 import pandas as pd
-import datetime as dt
 
 import baltic3 as bt
+
+# date conversion imports
+import datetime
+from dateutil.relativedelta import relativedelta as rd
+from datetime import timedelta
+import time
 
 """A bunch of functions which I wrote to support baltic3.py.
 """
@@ -221,7 +226,8 @@ def austechia_read_tree(tree_path, date_bool=False, date_pos=-1, date_delim="_",
     ll.sortBranches(descending=False)
     if date_bool:
         ll.setAbsoluteTime(highestTip)
-    #print('Highest tip date: %.4f'%(highestTip))
+        print('Highest tip date: %.4f'%(highestTip))
+
 
     return ll
 
@@ -587,10 +593,10 @@ def decimalDate(date,fmt="%Y-%m-%d",variable=False,dateSplitter='-'):
             elif dateL==1:
                 fmt=dateSplitter.join(fmt.split(dateSplitter)[:-2])
 
-        adatetime=dt.datetime.strptime(date,fmt) ## convert to datetime object
+        adatetime=datetime.datetime.strptime(date,fmt) ## convert to datetime object
         year = adatetime.year ## get year
-        boy = dt.datetime(year, 1, 1) ## get beginning of the year
-        eoy = dt.datetime(year + 1, 1, 1) ## get beginning of next year
+        boy = datetime.datetime(year, 1, 1) ## get beginning of the year
+        eoy = datetime.datetime(year + 1, 1, 1) ## get beginning of next year
 
         ## return fractional year
         result = year + ((adatetime - boy).total_seconds() / ((eoy - boy).total_seconds()))
@@ -606,6 +612,63 @@ def isfloat(value):
         return True
     except ValueError:
         return False
+
+
+def datetime_to_decimal_year(date):
+    """Some SO solution I haven't really looked into yet.
+
+    PARAMS
+    ------
+    date: datetime object
+
+    returns
+    -------
+    decimal year: float. the decimal year version of the input.
+
+    e.g.
+    >>> T = datetime.date(2016, 11, 29)
+    >>> most_recent = to_decimal_year(T)
+    >>> most_recent
+    2016.9098360655737
+    """
+    def sinceEpoch(date): # returns seconds since epoch
+        return time.mktime(date.timetuple())
+    s = sinceEpoch
+
+    year = date.year
+    startOfThisYear = datetime.datetime(year=year, month=1, day=1)
+    startOfNextYear = datetime.datetime(year=year+1, month=1, day=1)
+
+    yearElapsed = s(date) - s(startOfThisYear)
+    yearDuration = s(startOfNextYear) - s(startOfThisYear)
+    fraction = yearElapsed/yearDuration
+
+    return date.year + fraction
+
+
+def to_decimal_year(date_str, date_delimiter="-"):
+    """Wraps datetime_to_decimal_year, with the additional precursor step
+    of converting the input date_str into a datetime.date object.
+
+    Params
+    -------
+    date_str: str, date in the format yyyy-mm-dd, yyyy-mm, or yyyy
+    date_delimiter: str, separator for the input date_str
+
+    Returns
+    -------
+    decimal year: float. the decimal year version of the input.
+    """
+    date_ln = date_str.split(date_delimiter)
+    T = "*"
+    if len(date_ln) == 3:
+        T = datetime.date(int(date_ln[0]), int(date_ln[1]), int(date_ln[2]))
+    elif len(date_ln) == 2:
+        T = datetime.date(int(date_ln[0]), int(date_ln[1]), 1)
+    elif len(date_ln) == 1:
+        T = datetime.date(int(date_ln[0]), 1, 1)
+
+    return datetime_to_decimal_year(T)
 
 
 #def unique(o, idfun=repr):
