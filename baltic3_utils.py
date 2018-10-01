@@ -44,7 +44,7 @@ def quick_draw_tree(tree,
                     fig_h = 12,
                     fig_w = 9,
                     branch_width=0.5, 
-                    branch_colour="black",
+                    branch_colour="gray",
                     tip_shape_size=8, 
                     x_offset=0, 
                     save_fn = "",
@@ -155,8 +155,11 @@ def quick_draw_tree(tree,
 
 
 def austechia_read_tree(tree_path, date_bool=False, date_pos=-1, date_delim="_", make_tree_verbose=False):
-    """Lifted from the austechia.ipynb. Best used for BEAST trees.
-    THIS WORKS, DON'T TOUCH ANYTHING. 
+    """Lifted from the austechia.ipynb (thus the name). 
+    This works for BEAST and RAXML trees, or raw newick strings, but not really for treetime or LSD dated trees. 
+    This is more because of the output: treetime-dated trees don't have the absoluteTime directly written in the newick strings. 
+    In those cases, manually extrapolate the node times from known tip dates. The branch lengths, at least, will be proportionate
+    as calendar times. 
     
     A number of lines which parsed dates in each tipname commented out,
     So now absoluteHeight attributes should be empty.
@@ -306,7 +309,7 @@ def treesub_to_bt(fn_in, fn_out, verbose=True):
     IMPT NOTE: dm output not working. Parse substitutions.tsv output directly instead
     for the moment...
     Reads raw treesub output, which is assumed to be in nexus format, does a
-    bunch of necessary wrangling, then returns a format that can be read by
+    bunch of necessary wrangling, then writes out a format that can be read by
     austechia_read_tree(). Still requires a tree with dates, delimited by '_'.
 
     Params
