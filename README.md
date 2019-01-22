@@ -13,7 +13,7 @@ Short answer: no.
 
 Long answer: I'm not sure. In my use cases, I set up baltic to work (somewhat) like HTML(rendering)/CSS(parameter or attribute value definitions)/JS(any programmatic functionality), so if you're already familiar with that sort of setup, it might be that much easier. Otherwise, I've been learning D3JS on my own, which is similar - and it's difficult.
 
-If you're new to Python, this is not a good starting point. 
+If you're new to Python, this is not a good starting point.
 
 # Input Tree File Format
 `Baltic` was originally written to accept BEAST MCC trees in mind, so any `.tre` file or `.nex` file needs to be wrangled into a `nexus` format. Most tree computation software like `raxml`, `fasttree` or `treesub` will only spit out the newick string. There are 2 blocks which need for be formatted: the taxa block, and the tree block.
@@ -81,8 +81,7 @@ Produces a tree in Baltic tree like:
 Gytis is apparently upgrading his original `baltic` library to python3, but I'm reluctant to switch over because (A)
 he hasn't fixed a None-type comparison error yet (comparing `float >= None`, no longer a permissible operation in Py3) and (B) `baltic3` has been aggressively used over 2017, even landing in publications and grant proposals. It _works_.
 
- - Find a way to accept just a tree string, without dates. IIRC when it currently can accept a tree string, but the resulting tree object won't have tip names, or something like that. Not sure if the tip/node attributes will be properly read as well (e.g. bootstrap values). Does `btu.read_tree()` work?
- - Find a way to allocate node identifiers of some kind, in either of the 3 tree-traversal methods.
+ - Find a way to allocate unique internal node identifiers of some kind, in either of the 3 tree-traversal methods.
  - Perform tip-to-mrca-to-tip computations. Problem is: can't identify the MRCA of two given tips, because the nodes don't have a unique identifier. These computations are currently done in `Bio.Phylo`; but calling to an external library seems inelegant.
 
 ### Porting over to Biopython
