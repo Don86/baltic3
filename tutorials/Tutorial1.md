@@ -1,4 +1,4 @@
-# Input Tree File Format
+# Tutorial 1 - Input Tree File Format
 `Baltic` was originally written to accept BEAST MCC trees in mind, so any `.tre` file or `.nex` file needs to be wrangled into a `nexus` format. Most tree computation software like `raxml`, `fasttree` or `treesub` will only spit out the newick string. There are 2 blocks which need for be formatted: the taxa block, and the tree block.
 
 Say, we have a newick string like this:
