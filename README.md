@@ -1,6 +1,10 @@
 # baltic3
 
-This is a phylogenetic tree visualization library. Originally developed by Gytis Dudas, it wraps `matplotlib`
+This is a phylogenetic tree visualization library. Originally developed by Gytis Dudas, it wraps `matplotlib` with its own proprietary `tree` object.
+
+* `baltic` isn't as good as `Biopython` at tree manipulation...
+* But it's far superior at visualization for final presentation figures.
+* `baltic` trades off ease-of-use with flexibility. I'd call it difficult to learn, but easy to master. 
 
 The Python 3 version of Baltic: the *Backronymed Adaptable Lightweight Tree Import Code*. The original Python2 version is available over at the [Bedford Lab](https://github.com/blab/baltic). That `readme`'s worth a read to explain how the class structures are set up. Gytis' original version is being migrated over to Python3, but I'm not sure if it's still under active development.
 
