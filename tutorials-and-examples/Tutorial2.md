@@ -2,7 +2,7 @@
 
 This tutorial briefly covers the `tree`, `node` and `leaf` classes, and some of their most important attributes. Gytis' original Python2 `baltic` [readme](https://github.com/blab/baltic) is highly recommended to get an in-depth understanding on how the `bt.tree()` as set up.
 
-![Image of baltic tree diagram](https://github.com/Don86/baltic3/blob/master/assets/baltic_tree_example.png)
+![Image of baltic tree diagram](https://github.com/Don86/baltic3/blob/master/assets/baltic-tree-example.png)
 
 * `tree` class: well, a tree. Retrieve all objects (internal nodes and leaves) as a list with `tre.Objects`
 * `node` class: internal nodes of the tree.
