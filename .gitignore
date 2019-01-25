@@ -2,3 +2,5 @@ tango_*
 Tutorial3.ipynb
 Scrapbook.ipynb
 *.pyc
+/.ipynb_checkpoints
+/__pycache__
