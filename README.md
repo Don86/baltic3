@@ -28,7 +28,13 @@ import baltic3_utils as btu
 
 # Tutorials
 
-`baltic` is meant to be executed in Jupyter, since the final output is probably a pdf of your final image. There's a series of tutorial notebooks in the `/tutorials` directory of this repo, enumerated in the recommended order.
+`baltic` is meant to be executed in Jupyter, since the final output is probably a pdf of your final image. There's a series of example notebooks in the `/tutorials` directory of this repo. In recommended order:
+
+* Tutorial 1 - Required input format for `baltic`.
+* Tutorial 2 - About the `baltic` tree object.
+* Example - simple tree - Example code to draw a very small tree with 4 tips.
+
+The rest of the examples are more complex examples of different visualisations.
 
 ### Is this easy to learn?
 
