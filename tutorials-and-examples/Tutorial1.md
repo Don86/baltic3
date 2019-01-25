@@ -56,4 +56,4 @@ end;
 
 Produces a tree in Baltic tree like:
 
-![Image of Wikitree](https://github.com/Don86/baltic3/blob/master/assets/my_simple_tree.pdf)
+![Image of Wikitree](/baltic3/assets/my_simple_tree.pdf)
