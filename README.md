@@ -30,9 +30,9 @@ import baltic3_utils as btu
 
 `baltic` is meant to be executed in Jupyter, since the final output is probably a pdf of your final image. There's a series of example notebooks in the `/tutorials` directory of this repo. In recommended order:
 
-* Tutorial 1 - Required input format for `baltic`.
-* Tutorial 2 - About the `baltic` tree object.
-* Example - simple tree - Example code to draw a very small tree with 4 tips.
+* [Tutorial 1](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Tutorial1.md) - Required input format for `baltic`.
+* [Tutorial 2](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Tutorial2.md) - About the `baltic` tree object.
+* [Gallery](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Gallery.ipynb) - Gallery of examples, though so far there's only 1 example in there.
 
 The rest of the examples are more complex examples of different visualisations.
 
@@ -42,7 +42,7 @@ The rest of the examples are more complex examples of different visualisations.
 
 Short answer: no.
 
-Long answer: I'm not sure. In my use cases, I set up baltic to work in `Jupyter` notebooks like the front-end trifecta of HTML/CSS/JS (or: rendering with `matplotlib`/parameter or attribute value definitions/programmatic functionality, respectively).  If you're already familiar with that sort of paradigm, it might be that much easier. Otherwise, if that second sentence was gibberish to you, this will have a bit of a learning curve.
+Long answer: I'm not sure. In my use cases, I set up baltic to work in `Jupyter` notebooks like the front-end trifecta of HTML/CSS/JS (or: rendering with `matplotlib`/parameter or attribute value definitions/programmatic functionality, respectively).  If that last sentence was gibberish to you, this will have a bit of a learning curve. Otherwise, if you're already familiar with that sort of paradigm, it might be that much easier. 
 
 If you're new to Python, this is not a good starting point.
 
