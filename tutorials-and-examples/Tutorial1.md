@@ -35,7 +35,7 @@ begin trees;
     tree TREE1 = [&R] <start of newick format...>
 ```
 
-Altogether, the following `Nexus` format is a valid format. Note that the node labels, `[&branch="something"]`, are optional. If this is, for instance, a RAXML tree with bootstrap labels at the nodes, then it would be something like `[&label=93]`, or something like that. The following is a full example of a formatted input `.tre` file:
+Altogether, the following `Nexus` format is a valid format. Note that the node labels, `[&branch="something"]`, are optional. These node/leaf proerties are usually some property pertaining to the software output that generated the tree, e.g. amino acid mutations, bootstrap values, etc, and can be accessed via the `node.traits` or `leaf.traits` attributes. If this is, for instance, a RAXML tree with bootstrap labels at the nodes, then it would be something like `[&label=93]`, or something like that. The following is a full example of a formatted input `.tre` file:
 
 ```
 #NEXUS

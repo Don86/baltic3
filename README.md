@@ -48,4 +48,4 @@ If you're new to Python, this is not a good starting point.
 
 # Dev Notes
 
-The very long to-do list [here](https://github.com/Don86/baltic3/blob/master/assets/dev-notes.md)
+The very long to-do list [here](https://github.com/Don86/baltic3/blob/master/assets/dev-notes.md). 

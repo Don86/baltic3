@@ -1,6 +1,6 @@
 # Tutorial 2 - The `baltic` tree object
 
-This tutorial briefly covers the `tree`, `node` and `leaf` classes, and some of their most important attributes. Gytis' original Python2 `baltic` [readme](https://github.com/blab/baltic) is highly recommended to get an in-depth understanding on how the `bt.tree()` as set up.
+This tutorial briefly covers the `tree`, `node` and `leaf` classes, and some of their most important attributes. Gytis' original Python2 `baltic` [readme](https://github.com/blab/baltic) is highly recommended to get an in-depth understanding on how the `bt.tree()` was set up.
 
 ![Image of baltic tree diagram](https://github.com/Don86/baltic3/blob/master/assets/baltic-tree-example.png)
 
