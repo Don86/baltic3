@@ -50,9 +50,10 @@ If you're new to Python, this is not a good starting point.
 
 # Demo: A/H3N2 in Australia (with Treetime)
 
-![H3N2 AR Viz](https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975.png)
+![H3N2 AR Viz](https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975.png | width=300)
 
 ML skyline plot generated from [`treetime`](https://github.com/neherlab/treetime).
+* Jupyter notebook [here](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Example%20-%20Viz%20H3N2%20AR.ipynb)
 * Note the slight uptick in diversity at the end (~2017) of the dataset. Given that this is a log-scale, this represents quite a large jump in diversity (10X increase!).
 * Is "skyline diversity" a measure? I'm not sure, because, personally, I don't find a single scalar measure of diversity that informative. I'd be more interested in *where* the diversity is occurring (i.e. which nucleotide sites are particularly mutable), and subsequent structure-function changes at the 3D structure level that could result from changes in mutation. Given that this is the HA sequence, some immunology contextual information (where antibodies tend to target) would be useful as well.  
 
