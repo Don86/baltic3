@@ -50,7 +50,7 @@ If you're new to Python, this is not a good starting point.
 
 # Demo: A/H3N2 in Australia (with Treetime)
 
-![H3N2 AR Viz](https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975.png | width=300)
+<img src="https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975.png" alt="H3N2 AR Viz" width="300">
 
 ML skyline plot generated from [`treetime`](https://github.com/neherlab/treetime).
 * Jupyter notebook [here](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Example%20-%20Viz%20H3N2%20AR.ipynb)
