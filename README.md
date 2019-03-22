@@ -44,18 +44,16 @@ The rest of the examples are more complex examples of different visualisations.
 
 Short answer: no.
 
-Long answer: It's easy if you know how to do it, which is a perfectly accurate but perfectly useless answer. In my use cases, I set up baltic to work in `Jupyter` notebooks like the front-end trifecta of HTML/CSS/JS (or: rendering with `matplotlib`/parameter or attribute value definitions/programmatic functionality, respectively).  If that last sentence was gibberish to you, this will have a bit of a learning curve. Otherwise, if you're already familiar with that sort of paradigm, it might be that much easier.
+Long answer: It's easy if you know how to do it, which is a perfectly accurate but perfectly useless answer. If you're new to Python, this is not a good starting point.
 
-If you're new to Python, this is not a good starting point.
+# Demo: A/H3N2 Influenza virus in Australia (with Treetime)
 
-# Demo: A/H3N2 in Australia (with Treetime)
-
-<img src="https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975.png" alt="H3N2 AR Viz" width="500">
+<img src="https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975-landscape.png" alt="H3N2 AR Viz" width="500">
 
 ML skyline plot generated from [`treetime`](https://github.com/neherlab/treetime).
 * Jupyter notebook [here](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Example%20-%20Viz%20H3N2%20AR.ipynb)
 * Note the slight uptick in diversity at the end (~2017) of the dataset. Given that this is a log-scale, this represents quite a large jump in diversity (10X increase!).
-* Is "skyline diversity" a measure? I'm not sure, because, personally, I don't find a single scalar measure of diversity that informative. I'd be more interested in *where* the diversity is occurring (i.e. which nucleotide sites are particularly mutable), and subsequent structure-function changes at the 3D structure level that could result from changes in mutation. Given that this is the HA sequence, some immunology contextual information (where antibodies tend to target) would be useful as well.  
+* Is "skyline diversity" a meaningful measure? I'm not sure, because, personally, I don't find a single scalar measure of diversity that informative. I'd be more interested in *where* the diversity is occurring (i.e. which nucleotide sites are particularly mutable), and subsequent structure-function changes at the 3D structure level that could result from changes in mutation. Given that this is the HA sequence, some immunology contextual information (where antibodies tend to target) would be useful as well.  
 
 # Dev Notes
 
