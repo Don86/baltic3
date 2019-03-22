@@ -48,7 +48,7 @@ Long answer: It's easy if you know how to do it, which is a perfectly accurate b
 
 # Demo: A/H3N2 Influenza virus in Australia (with Treetime)
 
-<img src="https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975-landscape.png" alt="H3N2 AR Viz" width="500">
+<img src="https://github.com/Don86/baltic3/blob/master/assets/h3n2-c9975-landscape.png" alt="H3N2 AR Viz" width="650">
 
 ML skyline plot generated from [`treetime`](https://github.com/neherlab/treetime).
 * Jupyter notebook [here](https://github.com/Don86/baltic3/blob/master/tutorials-and-examples/Example%20-%20Viz%20H3N2%20AR.ipynb)
